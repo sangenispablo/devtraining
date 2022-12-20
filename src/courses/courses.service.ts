@@ -26,6 +26,7 @@ export class CoursesService {
     if (!course) {
       throw new NotFoundException(`El id ${id} no existe`);
     }
+    return course;
   }
 
   create(createCourseDto: any) {
