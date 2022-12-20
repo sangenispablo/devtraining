@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Course } from './entities/course.entity';
 
 @Injectable()
@@ -10,15 +10,41 @@ export class CoursesService {
       name: 'Fundamentos de NestJS',
       description: 'El mejor curso de NestJS',
       tags: ['typescript', 'nodejs'],
-    }
+    },
   ];
 
-  // metodos que alteran courses
+  // metodos que alteran this.courses
   findAll() {
     return this.courses;
   }
 
   findOne(id: string) {
-    return this.courses.find((course: Course) => course.id === Number(id));
+    const course = this.courses.find(
+      (course: Course) => course.id === Number(id),
+    );
+
+    if (!course) {
+      throw new NotFoundException(`El id ${id} no existe`);
+    }
+  }
+
+  create(createCourseDto: any) {
+    this.courses.push(createCourseDto);
+  }
+
+  update(id: string, updateCourseDto: any) {
+    const indexCourse = this.courses.findIndex(
+      (course) => course.id === Number(id),
+    );
+    this.courses[indexCourse] = updateCourseDto;
+  }
+
+  remove(id: string) {
+    const indexCourse = this.courses.findIndex(
+      (course) => course.id === Number(id),
+    );
+    if (indexCourse >= 0) {
+      this.courses.splice(indexCourse, 1);
+    }
   }
 }
